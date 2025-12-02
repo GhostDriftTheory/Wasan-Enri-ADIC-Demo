@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wasan 2.0: Enri Visualization</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* -------------------------------------------
+       Theme: Edo-Cyber / Secret Scroll
+    ------------------------------------------- */
+    :root {
+      --color-paper: #f7f6f0;
+      --color-ai: #162447;      /* Indigo */
+      --color-sumi: #2b2b2b;    /* Ink Black */
+      --color-usuzumi: #595959; /* Faded Ink */
+      --color-shu: #c7362a;     /* Vermilion */
+      --color-yamabuki: #d9a62e;/* Gold */
+      --color-uguisu: #5d6b2f;  /* Olive Green */
+      --color-border: rgba(22, 36, 71, 0.15);
+
+      /* Fonts Mixed: Japanese Mincho + English Serif */
+      --font-jp: "Zen Old Mincho", serif;
+      --font-en: "Cormorant Garamond", serif;
+      --font-mono: "Courier Prime", monospace;
+
+      --paper-texture: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDMiLz4KPC9zdmc+');
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #e0ded5;
+      background-image: var(--paper-texture);
+      color: var(--color-sumi);
+      font-family: var(--font-en);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; 
+      line-height: 1.6; 
+      padding: 10px; 
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 900px;
+      background-color: var(--color-paper);
+      background-image: var(--paper-texture);
+      border: 1px solid #d4d2c9;
+      padding: 20px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+    
+    /* Decorative lines */
+    .app-container::before, .app-container::after {
+      content: ""; position: absolute; left: 0; right: 0; height: 4px; background: var(--color-ai);
+    }
+    .app-container::before { top: 0; }
+    .app-container::after { bottom: 0; }
+
+    @media (min-width: 768px) {
+      body { padding: 30px; }
+      .app-container { padding: 48px; gap: 48px; }
+    }
+
+    section { width: 100%; }
+
+    /* -------------------------------------------
+       Typography & Design
+    ------------------------------------------- */
+    .header-row {
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap; 
+      gap: 8px;
+    }
+    /* Main Title in Kanji for flavor */
+    .tategaki-title {
+      font-family: var(--font-jp);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--color-ai);
+      border-left: 6px solid var(--color-shu);
+      padding-left: 12px;
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+    /* English Subtitle */
+    .en-subtitle {
+      display: block;
+      font-family: var(--font-en);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-sumi);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-sub {
+      font-size: 0.8rem;
+      color: var(--color-usuzumi);
+      font-family: var(--font-mono);
+      text-align: right;
+      flex-grow: 1;
+      margin-bottom: 4px;
+    }
+
+    /* Guide Box (Scroll style) */
+    .modern-guide {
+      font-family: var(--font-en);
+      font-size: 1.05rem; 
+      color: var(--color-sumi);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--color-ai);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.03);
+    }
+    .modern-guide strong { 
+      color: var(--color-ai); 
+      font-weight: 700; 
+      background: linear-gradient(transparent 70%, rgba(217, 166, 46, 0.2) 70%);
+    }
+    .guide-label {
+      font-family: var(--font-jp); /* Kanji Label */
+      font-size: 0.8rem; color: var(--color-shu); font-weight: 900; display: block; margin-bottom: 4px;
+    }
+    .guide-label span {
+      font-family: var(--font-en); font-weight: normal; margin-left: 6px; color: var(--color-usuzumi);
+    }
+
+    .section-label {
+      font-family: var(--font-jp);
+      font-size: 1.2rem; color: var(--color-ai); font-weight: 900;
+      border-bottom: 1px dashed var(--color-border);
+      padding-bottom: 6px; margin-bottom: 20px; display: block;
+    }
+    .section-label span {
+      font-family: var(--font-en); font-size: 1rem; font-weight: 600; margin-left: 8px; color: var(--color-usuzumi);
+    }
+
+    /* Kanji Display (Large N) */
+    .kanji-display {
+      font-family: var(--font-jp);
+      font-size: 2.5rem;
+      line-height: 1; margin: 24px 0;
+      text-align: center; color: var(--color-sumi);
+      transition: color 0.2s;
+    }
+    .kanji-sub {
+      display: block; font-family: var(--font-en); font-size: 1rem; color: var(--color-usuzumi); margin-top: 4px;
+    }
+    
+    /* Slider */
+    .soroban-slider {
+      width: 100%; margin: 12px 0 28px 0;
+      -webkit-appearance: none; background: transparent; height: 48px;
+      touch-action: none;
+    }
+    .soroban-slider::-webkit-slider-runnable-track {
+      width: 100%; height: 2px; background: var(--color-usuzumi);
+    }
+    .soroban-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; height: 32px; width: 32px;
+      background: #fff; border: 2px solid var(--color-shu);
+      margin-top: -15px; border-radius: 50%; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.1s;
+    }
+    .soroban-slider:active::-webkit-slider-thumb {
+      transform: scale(1.15); background: var(--color-shu);
+    }
+
+    /* Button */
+    .hanko-btn {
+      display: block; width: 100%; padding: 16px;
+      background: #fff; border: 2px solid var(--color-shu);
+      color: var(--color-shu); font-family: var(--font-en);
+      font-size: 1.1rem; font-weight: 700; text-align: center; cursor: pointer;
+      transition: all 0.2s; box-shadow: 3px 3px 0 rgba(199, 54, 42, 0.1);
+      border-radius: 3px; text-decoration: none;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .hanko-btn:active { transform: translateY(2px); box-shadow: none; }
+    .hanko-btn.playing {
+      background: #fff8f8; color: var(--color-usuzumi); border-color: var(--color-usuzumi);
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.05); pointer-events: none;
+    }
+
+    /* Link Button */
+    .hanko-btn.link-btn {
+      background: linear-gradient(135deg, #fff 0%, #f9f9f7 100%);
+      border: 2px solid var(--color-ai); color: var(--color-ai);
+      box-shadow: 0 4px 12px rgba(22, 36, 71, 0.1);
+    }
+    .hanko-btn.link-btn:hover { background: var(--color-ai); color: #fff; }
+
+    /* Fuda (Cards) */
+    .fuda-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .fuda-full { grid-column: span 2; }
+    
+    .fuda {
+      background: #fff; padding: 12px 14px;
+      border-left: 3px solid var(--color-usuzumi);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      overflow: hidden; 
+    }
+    @media (min-width: 480px) {
+      .fuda { flex-direction: row; justify-content: space-between; align-items: baseline; }
+    }
+    
+    .fuda-label { 
+      font-family: var(--font-jp); font-size: 0.8rem; color: var(--color-usuzumi); font-weight: 700; 
+    }
+    .fuda-sub {
+      display: block; font-family: var(--font-en); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8;
+    }
+    
+    .fuda-val { 
+      font-family: var(--font-mono); font-size: 1rem; color: var(--color-sumi); 
+      letter-spacing: -0.5px; white-space: nowrap; margin-top: 4px;
+    }
+    
+    .fuda.lower { border-left-color: var(--color-uguisu); }
+    .fuda.upper { border-left-color: var(--color-yamabuki); }
+    .fuda.gap { border-left-color: var(--color-shu); background: #fffcfc; }
+    .gap-val { color: var(--color-shu); }
+    .gap-note { font-size: 0.65rem; color: var(--color-usuzumi); margin-top: 2px; font-family: var(--font-en);}
+
+    /* Inequality Bar */
+    .inequality-bar {
+      margin: 16px 0 4px 0;
+      background: rgba(22, 36, 71, 0.04);
+      padding: 12px;
+      border-radius: 3px;
+      font-family: var(--font-en);
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px dashed var(--color-border);
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 8px;
+    }
+    .ine-green { color: var(--color-uguisu); }
+    .ine-gold { color: var(--color-yamabuki); }
+    .ine-center { color: var(--color-sumi); font-family: var(--font-jp); margin: 0 4px; }
+
+    /* Reference Metrics */
+    .reference-metrics {
+      text-align: center;
+      font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-usuzumi);
+      margin-bottom: 12px; opacity: 0.8;
+    }
+
+    /* Visualization */
+    .viz-box {
+      width: 100%; height: 0; padding-bottom: 90%; 
+      background: #fff;
+      background-image: radial-gradient(#e0ded5 1px, transparent 1px);
+      background-size: 20px 20px;
+      border: 1px solid var(--color-ai);
+      margin-top: 24px; /* Added spacing from button */
+      margin-bottom: 12px;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.03);
+    }
+    @media (min-width: 600px) { .viz-box { height: 380px; padding-bottom: 0; } }
+    svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+    /* Animations */
+    .poly-inner-anim { transform-origin: center; animation: expandInner 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+    @keyframes expandInner { 0% { transform: scale(0.92); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+    .poly-outer-anim { transform-origin: center; animation: contractOuter 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+    @keyframes contractOuter { 0% { transform: scale(1.08); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+    
+    /* Ledger Area */
+    .daifukucho-wrapper { margin-top: 20px; }
+    
+    /* Security Manifesto (High Board) */
+    .safety-manifesto {
+      background: #fff;
+      border: 2px solid var(--color-ai);
+      padding: 20px 16px; border-radius: 3px;
+      margin-bottom: -2px; position: relative; z-index: 2;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    @media (min-width: 480px) { .safety-manifesto { padding: 24px; } }
+
+    .safety-manifesto::after, .safety-manifesto::before { 
+      content: "◆"; position: absolute; color: var(--color-ai); font-size: 0.8rem; 
+    }
+    .safety-manifesto::after { top: 8px; right: 8px; }
+    .safety-manifesto::before { bottom: 8px; left: 8px; }
+
+    .safety-title {
+      font-family: var(--font-jp);
+      font-size: 1.1rem; font-weight: 900; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px; color: var(--color-ai);
+      border-bottom: 1px solid var(--color-border); padding-bottom: 8px;
+    }
+    .safety-title span { font-family: var(--font-en); font-size: 0.9rem; font-weight: normal; color: var(--color-usuzumi); }
+
+    .safety-text {
+      font-family: var(--font-en); font-size: 1rem; line-height: 1.7; color: var(--color-sumi);
+    }
+    
+    /* Comparison Box */
+    .comparison-box {
+      display: flex; flex-direction: column; gap: 12px; margin-top: 20px; margin-bottom: 20px;
+    }
+    @media (min-width: 480px) { .comparison-box { flex-direction: row; gap: 20px; } }
+    
+    .compare-item {
+      flex: 1; padding: 14px; border-radius: 3px; font-size: 0.9rem; line-height: 1.5;
+      border: 1px solid var(--color-border); font-family: var(--font-en); position: relative;
+    }
+    .compare-ai { background: #fafafa; }
+    .compare-adic { background: rgba(217, 166, 46, 0.08); border-color: var(--color-yamabuki); }
+    .compare-adic::after {
+      content: "Spirit of Wasan"; position: absolute; top: -10px; right: 8px;
+      background: var(--color-yamabuki); color: #fff;
+      font-size: 0.7rem; padding: 2px 8px; border-radius: 2px; font-weight: 600;
+    }
+    .compare-label { display: block; font-size: 0.8rem; color: var(--color-usuzumi); margin-bottom: 6px; font-weight: 700; text-transform: uppercase;}
+    
+    /* Anti-Fake Notice */
+    .anti-fake-notice {
+      background: var(--color-ai); color: #fff; font-size: 0.9rem;
+      padding: 12px 14px; text-align: center; margin-top: 16px;
+      border-radius: 3px; font-weight: 600; font-family: var(--font-en); line-height: 1.5;
+    }
+    .anti-fake-notice span { font-weight: 900; color: var(--color-yamabuki); }
+    
+    /* Proof Statement */
+    .proof-statement {
+      background: #f4f6f8; color: var(--color-ai); font-size: 0.85rem;
+      padding: 10px 14px; margin-top: 4px;
+      border-left: 3px solid var(--color-yamabuki);
+      font-family: var(--font-en); line-height: 1.6; font-style: italic;
+    }
+
+    /* Ledger Body */
+    .daifukucho {
+      background: #fdfdfd; color: var(--color-sumi);
+      padding: 20px 16px; height: 240px; overflow-y: auto;
+      font-family: var(--font-en); font-size: 0.9rem;
+      border: 2px solid var(--color-ai); border-top: none; 
+      background-image: linear-gradient(transparent 95%, rgba(0,0,0,0.05) 95%);
+      background-size: 100% 3em; line-height: 3em;
+      scroll-behavior: smooth; position: relative;
+    }
+    /* Log Entry */
+    .log-entry { 
+      margin-bottom: 0; border-bottom: 1px solid rgba(0,0,0,0.1); 
+      padding: 8px 0; display: flex; flex-direction: column;
+    }
+    .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .log-title { font-weight: 700; color: var(--color-sumi); }
+    .log-seal {
+      font-family: var(--font-jp); font-size: 0.7rem; color: var(--color-shu); border: 1px solid var(--color-shu);
+      padding: 1px 6px; border-radius: 2px; font-weight: 900; letter-spacing: 1px; flex-shrink: 0; 
+    }
+    .log-body {
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-usuzumi);
+      background: rgba(0,0,0,0.03); padding: 6px 10px; border-radius: 3px; word-break: break-all;
+    }
+
+    .footer {
+      margin-top: 40px; padding: 24px 16px;
+      background: var(--color-ai); color: #fff;
+      text-align: center; font-size: 1rem; font-family: var(--font-en);
+      line-height: 1.8; border-radius: 3px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .footer strong { color: var(--color-yamabuki); font-weight: 700; }
+
+    /* Related Link */
+    .related-link-area { margin-top: 48px; text-align: center; }
+    .related-title {
+      font-family: var(--font-jp); font-size: 1rem; color: var(--color-ai); font-weight: 900; margin-bottom: 16px;
+      display: inline-block; border-bottom: 1px solid var(--color-shu); padding-bottom: 4px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- Section I: Introduction -->
+  <section>
+    <div class="header-row">
+      <div>
+        <div class="tategaki-title">円理 改</div>
+        <span class="en-subtitle">Enri 2.0: The Circle Principle</span>
+      </div>
+      <div class="header-sub">
+        Wasan 2.0 / Ghost Drift Protocol<br>
+        Digital Archiving of Edo Mathematics
+      </div>
+    </div>
+    
+    <div class="modern-guide">
+      <span class="guide-label">【口上】<span>PROLOGUE</span></span>
+      While the West sought <strong>"Infinite Proofs"</strong>,<br>
+      Edo Japan polished the <strong>"Finite Procedure"</strong>.<br>
+      "Enri" (Circle Principle) was not a detour.<br>
+      It was the pride of Wasan: a <strong>"Transparent Method"</strong> verifiable by anyone.
+    </div>
+
+    <!-- History Block -->
+    <div class="modern-guide" style="margin-top:-10px; border-left-color: var(--color-yamabuki);">
+      <span class="guide-label" style="color:var(--color-yamabuki);">【小史】<span>HISTORY</span></span>
+      <strong>SEKI Takakazu</strong> — The giant of Edo mathematics who reached global standards through self-study.<br>
+      His <strong>"Enri"</strong> was a finite secret technique to trap the circle using polygons, without using infinity.<br>
+      This machine re-implements his genius into a modern OS by carving his thoughts into the ADIC Ledger.
+    </div>
+  </section>
+
+  <!-- Section II: Operation & Visuals -->
+  <section>
+    <div class="section-label">壱. 円ヲ刻ム <span>I. CARVING THE CIRCLE</span></div>
+    
+    <div class="modern-guide" style="border-left-color: var(--color-shu); margin-bottom:12px;">
+      <span class="guide-label" style="color:var(--color-shu);">【体験】<span>EXPERIENCE</span></span>
+      Moving the slider is to re-live the <strong>"Procedure"</strong>.<br>
+      Truth does not fall from the sky.<br>
+      It resides only in the <strong>"Next Move"</strong> of layering polygons.
+    </div>
+
+    <div class="kanji-display">
+      <span id="dispKanji">十二角形</span>
+      <span class="kanji-sub" id="dispEnglish">12-sided Polygon</span>
+    </div>
+    
+    <!-- Slider -->
+    <input type="range" id="inputN" min="6" max="192" step="1" value="12" class="soroban-slider">
+    
+    <!-- Demo Button -->
+    <button class="hanko-btn" id="btnDemo">
+      Auto-Performance (Replay Procedure)
+    </button>
+
+    <!-- Visual Moved Here for Mobile UX -->
+    <div class="viz-box">
+      <svg viewBox="0 0 400 400" id="vizSvg">
+        <!-- Circle Area = Pi -->
+        <circle cx="200" cy="200" r="140" fill="rgba(22, 36, 71, 0.03)" stroke="#ccc" stroke-dasharray="4 4" />
+        <!-- Outer Poly -->
+        <polygon id="polyOuter" points="" style="fill:rgba(217,166,46,0.15); stroke:#d9a62e; stroke-width:2;" />
+        <!-- Inner Poly -->
+        <polygon id="polyInner" points="" style="fill:rgba(93,107,47,0.15); stroke:#5d6b2f; stroke-width:2;" />
+        <!-- Center -->
+        <circle cx="200" cy="200" r="3" fill="#2b2b2b" />
+        <text x="390" y="380" text-anchor="end" font-size="12" fill="#aaa" style="writing-mode: tb; font-family:'Zen Old Mincho'">円理図解</text>
+      </svg>
+    </div>
+
+    <!-- Inequality Bar as Legend -->
+    <div class="inequality-bar">
+      <span class="ine-green">Inner(Small)</span> ≦ 
+      <span class="ine-center">Enri (Truth)</span> ≦ 
+      <span class="ine-gold">Outer(Large)</span>
+    </div>
+
+  </section>
+
+  <!-- Section III: Results & Verification -->
+  <section>
+    <div class="section-label">弐. 挟み込みノ検分 <span>II. INSPECTION OF BOUNDS</span></div>
+    
+    <div class="fuda-grid">
+      <div class="fuda lower">
+        <span class="fuda-label">下界（内接）<br><span class="fuda-sub">Lower Bound (Inner)</span></span>
+        <span id="valLower" class="fuda-val">3.00000000</span>
+      </div>
+      <div class="fuda upper">
+        <span class="fuda-label">上界（外接）<br><span class="fuda-sub">Upper Bound (Outer)</span></span>
+        <span id="valUpper" class="fuda-val">3.21539031</span>
+      </div>
+      <div class="fuda gap fuda-full">
+        <span class="fuda-label">隙（未確定領域）<br><span class="fuda-sub">The Gap (Unknown)</span></span>
+        <span id="valGap" class="fuda-val gap-val">0.21539031</span>
+        <span class="gap-note">※ Mastery achieved when GAP &lt; 0.001</span>
+      </div>
+    </div>
+
+    <!-- Reference -->
+    <div class="reference-metrics">
+      Ref: Difference from Modern π ≒ <span id="valDiff">0.00...</span>
+    </div>
+
+    <!-- Section IV: The Ledger -->
+    <div class="daifukucho-wrapper">
+      <!-- Security Manifesto -->
+      <div class="safety-manifesto">
+        <div class="safety-title">
+          <span>❖</span> 参. 算法大福帳 <span>III. THE GREAT LEDGER</span>
+        </div>
+        <div class="safety-text">
+          <div style="margin-bottom:10px;">
+            In Edo, mathematicians dedicated their solutions to shrines as <strong>"Sangaku" (Mathematics Tablets)</strong>.<br>
+            It was not a boast, but a <strong>disclosure of procedure (Source Code)</strong> for anyone to verify.<br>
+            ADIC (The Digital Ledger) is the modern Sangaku.<br>
+            Rejecting secrecy and exposing the procedure is the strongest proof.
+          </div>
+          
+          <div class="comparison-box">
+            <div class="compare-item compare-ai">
+              <span class="compare-label">Modern AI</span>
+              Shows only "This is the answer".<br>
+              Interior is invisible, unverifiable.<br>
+              <strong>⇒ Black Box</strong>
+            </div>
+            <div class="compare-item compare-adic">
+              <span class="compare-label">Wasan & ADIC</span>
+              "Do this, and this will happen."<br>
+              A procedure reproducible by anyone.<br>
+              <strong>⇒ Open Knowledge</strong>
+            </div>
+          </div>
+
+          <!-- Anti-Fake Notice -->
+          <div class="anti-fake-notice">
+            <span>[DECREE]</span> By tracing this history, anyone can verify that the AI has committed <span>NO HALLUCINATION</span> (Fabrication).
+          </div>
+          
+          <!-- Proof Statement -->
+          <div class="proof-statement">
+            <strong>[PROOF]</strong> Each line is a finite log recording the "Squeezing by Polygons".<br>
+            As long as this sequence is finite, this range regarding π serves as a certificate that anyone can re-examine.
+          </div>
+        </div>
+      </div>
+      
+      <!-- Ledger Body -->
+      <div class="daifukucho" id="ledger"></div>
+      
+      <div style="font-size:0.7rem; color:var(--color-usuzumi); margin-top:8px; text-align:right; font-family:var(--font-en); font-style:italic;">
+        * All rows are open procedures, just like Sangaku.
+      </div>
+    </div>
+  </section>
+
+  <!-- Link -->
+  <section class="related-link-area">
+    <div class="related-title">【別誂】 和算二・〇ノ系譜 <span>(Related Project)</span></div>
+    <a href="https://ghostdrifttheory.github.io/prime-counter-demo/" target="_blank" class="hanko-btn link-btn">
+      Prime Counter: Counting All Things
+    </a>
+  </section>
+
+  <div class="footer">
+    Procedure over Proof. Implementation over Theory.<br>
+    The <strong>"Finite Aesthetic"</strong> loved by Edo mathematicians<br>
+    will become the <strong>"Foundation of Trust"</strong> that clears the opacity of the digital society.<br>
+    <strong>This is the primal landscape of algorithms that Japan should be proud of.</strong>
+  </div>
+
+</div>
+
+<script>
+  /* * Wasan 2.0 / High-Performance Core + Animation */
+  const RADIUS = 140; 
+  const CENTER = 200;
+  
+  const elInputN = document.getElementById('inputN');
+  const elDispKanji = document.getElementById('dispKanji');
+  const elDispEnglish = document.getElementById('dispEnglish');
+  const elValLower = document.getElementById('valLower');
+  const elValUpper = document.getElementById('valUpper');
+  const elValGap = document.getElementById('valGap');
+  const elValDiff = document.getElementById('valDiff');
+  const elPolyInner = document.getElementById('polyInner');
+  const elPolyOuter = document.getElementById('polyOuter');
+  const elLedger = document.getElementById('ledger');
+  const btnDemo = document.getElementById('btnDemo');
+
+  const KANJI_NUMS = ["零","壱","弐","参","四","五","六","七","八","九"];
+
+  function toKanji(n) {
+    if(n>=1000) return n;
+    if(n<10) return KANJI_NUMS[n];
+    if(n<100) {
+      let t=Math.floor(n/10), o=n%10, s="";
+      if(t>1) s+=KANJI_NUMS[t]; s+="十";
+      if(o>0) s+=KANJI_NUMS[o];
+      return s;
+    }
+    return n;
+  }
+
+  function calculate(n) {
+    const lower = (n/2) * Math.sin(2 * Math.PI / n);
+    const upper = n * Math.tan(Math.PI / n);
+    const diff = Math.abs(upper - Math.PI); 
+    return { l: lower, u: upper, g: upper - lower, d: diff };
+  }
+
+  function updatePoly(n) {
+    let pi = [], po = [];
+    let rOut = RADIUS / Math.cos(Math.PI/n);
+    for(let i=0; i<n; i++){
+      let th = -Math.PI/2 + (i*2*Math.PI/n);
+      let c = Math.cos(th), s = Math.sin(th);
+      pi.push((CENTER+RADIUS*c).toFixed(1)+","+(CENTER+RADIUS*s).toFixed(1));
+      po.push((CENTER+rOut*c).toFixed(1)+","+(CENTER+rOut*s).toFixed(1));
+    }
+    elPolyInner.setAttribute('points', pi.join(' '));
+    elPolyOuter.setAttribute('points', po.join(' '));
+  }
+
+  function triggerAnimation() {
+    elPolyInner.classList.remove("poly-inner-anim");
+    elPolyOuter.classList.remove("poly-outer-anim");
+    void elPolyInner.offsetWidth; 
+    elPolyInner.classList.add("poly-inner-anim");
+    elPolyOuter.classList.add("poly-outer-anim");
+  }
+
+  function log(n, res, k) {
+    const d = document.createElement('div');
+    d.className = 'log-entry';
+    // Status in Kanji with English tooltips context imply
+    let status = "奉納"; // Dedication
+    let statusColor = "color:var(--color-shu); border-color:var(--color-shu);";
+    if (res.g < 0.001) {
+       status = "皆伝"; // Mastery
+       statusColor = "color:#fff; background:var(--color-shu); border-color:var(--color-shu);";
+    }
+    const txId = Date.now().toString(36).toUpperCase();
+    d.innerHTML = `
+      <div class="log-header">
+        <span class="log-title">${n}-gon Ritual</span>
+        <span class="log-seal" style="${statusColor}">【${status}】</span>
+      </div>
+      <div class="log-body">
+        ID:${txId} | GAP:${res.g.toExponential(4)}<br>
+        L:${res.l.toFixed(8)} < π < U:${res.u.toFixed(8)}
+      </div>
+    `;
+    elLedger.appendChild(d);
+    setTimeout(() => { elLedger.scrollTop = elLedger.scrollHeight; }, 10);
+  }
+
+  function updateVisuals(n) {
+    let k = toKanji(n) + "角形";
+    elDispKanji.textContent = k;
+    elDispEnglish.textContent = `${n}-sided Polygon`;
+    let r = calculate(n);
+    elValLower.textContent = r.l.toFixed(8);
+    elValUpper.textContent = r.u.toFixed(8);
+    elValGap.textContent = r.g.toFixed(8);
+    elValDiff.textContent = r.d.toExponential(4); 
+    updatePoly(n);
+    return { n, r, k };
+  }
+
+  elInputN.addEventListener('input', () => {
+    let n = parseInt(elInputN.value);
+    updateVisuals(n);
+  });
+
+  elInputN.addEventListener('change', () => {
+    let n = parseInt(elInputN.value);
+    let data = updateVisuals(n);
+    log(data.n, data.r, data.k);
+    triggerAnimation();
+  });
+
+  let demoInterval = null;
+  btnDemo.addEventListener('click', () => {
+    if(demoInterval) return;
+    btnDemo.textContent = "Performing... (Replaying Procedure)";
+    btnDemo.classList.add("playing");
+    let currentN = 6;
+    const steps = [6, 8, 12, 16, 24, 32, 48, 64, 96]; 
+    let stepIndex = 0;
+    demoInterval = setInterval(() => {
+      if (stepIndex >= steps.length) {
+        clearInterval(demoInterval);
+        demoInterval = null;
+        btnDemo.textContent = "Auto-Performance (Replay Procedure)";
+        btnDemo.classList.remove("playing");
+        return;
+      }
+      let n = steps[stepIndex];
+      elInputN.value = n;
+      let data = updateVisuals(n);
+      log(data.n, data.r, data.k);
+      triggerAnimation();
+      stepIndex++;
+    }, 1200);
+  });
+
+  let initData = updateVisuals(12);
+  const iD = document.createElement('div');
+  iD.className = 'log-entry';
+  iD.innerHTML = `
+    <div class="log-header">
+      <span class="log-title">System Boot</span>
+      <span class="log-seal">【開始】</span>
+    </div>
+    <div class="log-body">
+      SYSTEM: WASAN-2.0 KERNEL BOOT<br>
+      PROTOCOL: OPEN_PROCEDURE
+    </div>
+  `;
+  elLedger.appendChild(iD);
+
+</script>
+</body>
+</html>
