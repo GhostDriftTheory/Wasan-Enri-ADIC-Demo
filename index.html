@@ -7,7 +7,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   
   <style>
     /* -------------------------------------------
@@ -59,7 +59,7 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 36px;
+      gap: 40px;
     }
     
     /* Decorative lines */
@@ -134,6 +134,11 @@
       line-height: 1.6;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.03);
     }
+    /* Mobile font size adjustment */
+    @media (max-width: 480px) {
+        .modern-guide { font-size: 0.95rem; line-height: 1.5; padding: 14px 16px; }
+    }
+
     .modern-guide strong { 
       color: var(--color-ai); 
       font-weight: 700; 
@@ -144,7 +149,7 @@
       font-size: 0.8rem; color: var(--color-shu); font-weight: 900; display: block; margin-bottom: 4px;
     }
     .guide-label span {
-      font-family: var(--font-en); font-weight: normal; margin-left: 6px; color: var(--color-usuzumi);
+      font-family: var(--font-en); font-weight: normal; margin-left: 6px; color: var(--color-usuzumi); letter-spacing: 1px;
     }
 
     .section-label {
@@ -154,7 +159,7 @@
       padding-bottom: 6px; margin-bottom: 20px; display: block;
     }
     .section-label span {
-      font-family: var(--font-en); font-size: 1rem; font-weight: 600; margin-left: 8px; color: var(--color-usuzumi);
+      font-family: var(--font-en); font-size: 1rem; font-weight: 600; margin-left: 8px; color: var(--color-usuzumi); letter-spacing: 0.5px;
     }
 
     /* Kanji Display (Large N) */
@@ -179,9 +184,9 @@
       width: 100%; height: 2px; background: var(--color-usuzumi);
     }
     .soroban-slider::-webkit-slider-thumb {
-      -webkit-appearance: none; height: 32px; width: 32px;
+      -webkit-appearance: none; height: 34px; width: 34px;
       background: #fff; border: 2px solid var(--color-shu);
-      margin-top: -15px; border-radius: 50%; cursor: pointer;
+      margin-top: -16px; border-radius: 50%; cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       transition: transform 0.1s;
     }
@@ -242,16 +247,18 @@
       font-family: var(--font-mono); font-size: 1rem; color: var(--color-sumi); 
       letter-spacing: -0.5px; white-space: nowrap; margin-top: 4px;
     }
+    /* Prevent number overflow on small screens */
+    @media (max-width: 360px) { .fuda-val { font-size: 0.9rem; } }
     
     .fuda.lower { border-left-color: var(--color-uguisu); }
     .fuda.upper { border-left-color: var(--color-yamabuki); }
     .fuda.gap { border-left-color: var(--color-shu); background: #fffcfc; }
     .gap-val { color: var(--color-shu); }
-    .gap-note { font-size: 0.65rem; color: var(--color-usuzumi); margin-top: 2px; font-family: var(--font-en);}
+    .gap-note { font-size: 0.65rem; color: var(--color-usuzumi); margin-top: 2px; font-family: var(--font-en); font-style: italic;}
 
     /* Inequality Bar */
     .inequality-bar {
-      margin: 16px 0 4px 0;
+      margin: 20px 0 8px 0;
       background: rgba(22, 36, 71, 0.04);
       padding: 12px;
       border-radius: 3px;
@@ -261,9 +268,81 @@
       border: 1px dashed var(--color-border);
       display: flex; justify-content: center; flex-wrap: wrap; gap: 8px;
     }
-    .ine-green { color: var(--color-uguisu); }
-    .ine-gold { color: var(--color-yamabuki); }
-    .ine-center { color: var(--color-sumi); font-family: var(--font-jp); margin: 0 4px; }
+    .ine-green { color: var(--color-uguisu); white-space: nowrap; }
+    .ine-gold { color: var(--color-yamabuki); white-space: nowrap; }
+    .ine-center { color: var(--color-sumi); font-family: var(--font-jp); margin: 0 4px; white-space: nowrap; }
+
+    /* ★ OS Comparison Box */
+    .os-comparison-block {
+      margin-top: 24px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .os-comp-header {
+      font-size: 0.85rem; font-weight: 700; color: var(--color-ai);
+      border-bottom: 1px dashed var(--color-border); padding-bottom: 8px; margin-bottom: 12px;
+      text-align: center; letter-spacing: 1px; text-transform: uppercase; font-family: var(--font-en);
+    }
+    /* Mobile: Vertical Stack, PC: Side by Side */
+    .os-comp-grid {
+      display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center;
+    }
+    @media (min-width: 480px) {
+      .os-comp-grid { grid-template-columns: 1fr 1px 1fr; gap: 0; align-items: stretch; }
+    }
+
+    .os-divider {
+      background: linear-gradient(to right, transparent, var(--color-border), transparent);
+      width: 100%; height: 1px;
+    }
+    @media (min-width: 480px) {
+      .os-divider {
+        background: linear-gradient(to bottom, transparent, var(--color-border), transparent);
+        width: 1px; height: 100%;
+      }
+    }
+
+    .os-comp-item {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 0 4px;
+    }
+    .os-comp-title {
+      font-size: 0.8rem; font-weight: 700; margin-bottom: 8px;
+      color: var(--color-ai); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-en);
+    }
+    /* Icons */
+    .os-comp-icon {
+      width: 48px; height: 48px; margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; 
+    }
+    .os-comp-icon svg {
+      width: 100%; height: 100%; position: static; display: block;
+    }
+    
+    /* SVG Icon Styling */
+    .icon-west circle, .icon-west line { stroke: var(--color-ai); stroke-width: 2; fill: none; stroke-linecap: round; }
+    .icon-west .flow-line { stroke-dasharray: 4 4; animation: flowRight 2s linear infinite; }
+    @keyframes flowRight { from { stroke-dashoffset: 8; } to { stroke-dashoffset: 0; } }
+
+    .icon-wasan circle, .icon-wasan line, .icon-wasan path { stroke: var(--color-shu); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-wasan .squeeze-arrow-up { animation: squeezeUp 2s ease-in-out infinite; }
+    .icon-wasan .squeeze-arrow-down { animation: squeezeDown 2s ease-in-out infinite; }
+    .icon-wasan .truth-box { opacity: 0; animation: truthAppear 2s ease-in-out infinite; }
+    @keyframes squeezeUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+    @keyframes squeezeDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    @keyframes truthAppear { 0%, 20% { opacity: 0; transform: scale(0.8); } 40%, 80% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+
+    .os-comp-desc {
+      font-size: 0.85rem; color: var(--color-sumi); line-height: 1.4;
+      font-weight: 900; margin-bottom: 4px; font-family: var(--font-en);
+    }
+    .os-comp-sub {
+      font-size: 0.7rem; color: var(--color-usuzumi); font-style: italic; font-family: var(--font-en);
+    }
 
     /* Reference Metrics */
     .reference-metrics {
@@ -279,7 +358,7 @@
       background-image: radial-gradient(#e0ded5 1px, transparent 1px);
       background-size: 20px 20px;
       border: 1px solid var(--color-ai);
-      margin-top: 24px; /* Added spacing from button */
+      margin-top: 24px; 
       margin-bottom: 12px;
       position: relative;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.03);
@@ -318,7 +397,7 @@
       display: flex; align-items: center; gap: 8px; color: var(--color-ai);
       border-bottom: 1px solid var(--color-border); padding-bottom: 8px;
     }
-    .safety-title span { font-family: var(--font-en); font-size: 0.9rem; font-weight: normal; color: var(--color-usuzumi); }
+    .safety-title span { font-family: var(--font-en); font-size: 0.9rem; font-weight: normal; color: var(--color-usuzumi); letter-spacing: 1px; }
 
     .safety-text {
       font-family: var(--font-en); font-size: 1rem; line-height: 1.7; color: var(--color-sumi);
@@ -385,14 +464,50 @@
       background: rgba(0,0,0,0.03); padding: 6px 10px; border-radius: 3px; word-break: break-all;
     }
 
-    .footer {
-      margin-top: 40px; padding: 24px 16px;
+    /* Secret Garden (Zeta) */
+    .math-secret {
       background: var(--color-ai); color: #fff;
-      text-align: center; font-size: 1rem; font-family: var(--font-en);
-      line-height: 1.8; border-radius: 3px;
+      padding: 24px 20px; margin-top: -2px; border-radius: 0 0 4px 4px;
+      position: relative; box-shadow: inset 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 20px;
+    }
+    .secret-title {
+      font-family: var(--font-jp); font-size: 1rem; font-weight: 900; color: var(--color-yamabuki);
+      margin-bottom: 12px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px;
+    }
+    .secret-title span { font-family: var(--font-en); font-size: 0.85rem; font-weight: normal; color: #ccc; margin-left: 8px; }
+    .secret-text {
+      font-family: var(--font-en); font-size: 0.95rem; line-height: 1.8; opacity: 0.9; font-style: italic;
+    }
+
+    .footer {
+      margin-top: 40px; padding: 32px 24px;
+      background: var(--color-ai); color: #fff;
+      text-align: center; font-family: var(--font-en);
+      border-radius: 3px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     }
+    .footer-phrase {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;
+      letter-spacing: 1px; line-height: 1.4;
+      text-transform: uppercase; color: var(--color-yamabuki);
+    }
+    .footer-text {
+      font-size: 0.95rem; line-height: 1.8; margin-bottom: 24px; opacity: 0.9;
+    }
+    .footer-strong {
+      font-size: 1rem; font-weight: 700; color: #fff;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 16px; margin-top: 16px;
+      line-height: 1.5;
+    }
     .footer strong { color: var(--color-yamabuki); font-weight: 700; }
+    
+    @media (max-width: 480px) {
+      .footer { padding: 24px 20px; }
+      .footer-phrase { font-size: 1rem; margin-bottom: 12px; }
+      .footer-text { font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+      .footer-strong { font-size: 0.9rem; padding-top: 12px; margin-top: 12px; }
+    }
 
     /* Related Link */
     .related-link-area { margin-top: 48px; text-align: center; }
@@ -400,6 +515,7 @@
       font-family: var(--font-jp); font-size: 1rem; color: var(--color-ai); font-weight: 900; margin-bottom: 16px;
       display: inline-block; border-bottom: 1px solid var(--color-shu); padding-bottom: 4px;
     }
+    .related-title span { font-family: var(--font-en); font-weight: normal; }
 
   </style>
 </head>
@@ -431,9 +547,50 @@
     <!-- History Block -->
     <div class="modern-guide" style="margin-top:-10px; border-left-color: var(--color-yamabuki);">
       <span class="guide-label" style="color:var(--color-yamabuki);">【小史】<span>HISTORY</span></span>
-      <strong>SEKI Takakazu</strong> — The giant of Edo mathematics who reached global standards through self-study.<br>
+      <strong>SEKI Takakazu</strong> — The giant of Edo mathematics who reached global standards alone.<br>
       His <strong>"Enri"</strong> was a finite secret technique to trap the circle using polygons, without using infinity.<br>
-      This machine re-implements his genius into a modern OS by carving his thoughts into the ADIC Ledger.
+      This machine re-implements his genius into a modern OS by carving his thoughts into the ADIC Ledger.<br>
+      <br>
+      <em style="display:block; margin-bottom:16px;">Even in Enri, the West draws a "Line" approaching Pi, while Wasan sets a "Cage" to trap Pi.</em>
+
+      <!-- OS Comparison Block (English, Animated) -->
+      <div class="os-comparison-block">
+        <div class="os-comp-header">COMPARISON: Western vs Wasan OS</div>
+        <div class="os-comp-grid">
+          <!-- Western -->
+          <div class="os-comp-item">
+            <span class="os-comp-title">Western: Limit</span>
+            <div class="os-comp-icon icon-west">
+              <svg viewBox="0 0 48 48">
+                <line x1="0" y1="24" x2="48" y2="24" stroke-width="3" class="flow-line" />
+                <path d="M40 20 L46 24 L40 28" stroke="currentColor" stroke-width="2" fill="none" />
+              </svg>
+            </div>
+            <div class="os-comp-desc">Truth is "Beyond"</div>
+            <div class="os-comp-sub">(Trusting Infinity)</div>
+          </div>
+          
+          <!-- Divider -->
+          <div class="os-divider"></div>
+          
+          <!-- Wasan -->
+          <div class="os-comp-item">
+            <span class="os-comp-title" style="color:var(--color-shu);">Wasan: Threshold</span>
+            <div class="os-comp-icon icon-wasan">
+              <svg viewBox="0 0 48 48">
+                <path d="M24 6 L24 18" class="squeeze-arrow-up" stroke-width="3" />
+                <path d="M20 14 L24 18 L28 14" class="squeeze-arrow-up" stroke-width="2" />
+                <path d="M24 42 L24 30" class="squeeze-arrow-down" stroke-width="3" />
+                <path d="M20 34 L24 30 L28 34" class="squeeze-arrow-down" stroke-width="2" />
+                <rect x="18" y="21" width="12" height="6" fill="currentColor" stroke="none" class="truth-box" />
+              </svg>
+            </div>
+            <div class="os-comp-desc" style="color:var(--color-shu);">Truth is "Here"</div>
+            <div class="os-comp-sub">(Trapped in Cage)</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -445,7 +602,8 @@
       <span class="guide-label" style="color:var(--color-shu);">【体験】<span>EXPERIENCE</span></span>
       Moving the slider is to re-live the <strong>"Procedure"</strong>.<br>
       Truth does not fall from the sky.<br>
-      It resides only in the <strong>"Next Move"</strong> of layering polygons.
+      It resides only in the <strong>"Next Move"</strong> of layering polygons.<br>
+      Wasan is a <strong>Threshold-based OS</strong> that defines truth as the area determined in finite steps.
     </div>
 
     <div class="kanji-display">
@@ -515,34 +673,33 @@
       <!-- Security Manifesto -->
       <div class="safety-manifesto">
         <div class="safety-title">
-          <span>❖</span> 参. 算法大福帳 <span>III. THE GREAT LEDGER</span>
+          <span>❖</span> 参. 世界模型ノ相違 <span>III. THE WORLD MODEL</span>
         </div>
         <div class="safety-text">
           <div style="margin-bottom:10px;">
-            In Edo, mathematicians dedicated their solutions to shrines as <strong>"Sangaku" (Mathematics Tablets)</strong>.<br>
-            It was not a boast, but a <strong>disclosure of procedure (Source Code)</strong> for anyone to verify.<br>
-            ADIC (The Digital Ledger) is the modern Sangaku.<br>
-            Rejecting secrecy and exposing the procedure is the strongest proof.
+            Why Wasan Now?<br>
+            Western thresholds are a <strong>"Compromise"</strong> believing in infinity.<br>
+            Wasan thresholds are a <strong>"Definition"</strong> that determines the finite world.
           </div>
           
           <div class="comparison-box">
             <div class="compare-item compare-ai">
-              <span class="compare-label">Modern AI</span>
-              Shows only "This is the answer".<br>
-              Interior is invisible, unverifiable.<br>
-              <strong>⇒ Black Box</strong>
+              <span class="compare-label">Western Model (Infinite)</span>
+              "Answer is beyond infinity."<br>
+              Truth is not yet in hand.<br>
+              <strong>⇒ If missed, it's a lie (Hallucination)</strong>
             </div>
             <div class="compare-item compare-adic">
-              <span class="compare-label">Wasan & ADIC</span>
-              "Do this, and this will happen."<br>
-              A procedure reproducible by anyone.<br>
-              <strong>⇒ Open Knowledge</strong>
+              <span class="compare-label">Wasan Model (Finite)</span>
+              "Truth is in this cage."<br>
+              Determined here and now.<br>
+              <strong>⇒ Absolute Guarantee</strong>
             </div>
           </div>
 
           <!-- Anti-Fake Notice -->
           <div class="anti-fake-notice">
-            <span>[DECREE]</span> By tracing this history, anyone can verify that the AI has committed <span>NO HALLUCINATION</span> (Fabrication).
+            <span>[DECREE]</span> By tracing this history, anyone can verify that the AI has committed <span>NO HALLUCINATION</span>.
           </div>
           
           <!-- Proof Statement -->
@@ -555,6 +712,16 @@
       
       <!-- Ledger Body -->
       <div class="daifukucho" id="ledger"></div>
+
+      <!-- Secret Garden (Zeta) -->
+      <div class="math-secret">
+        <div class="secret-title">【数理ノ裏庭】ζ（ゼータ）トノ邂逅 <span>THE SECRET GARDEN</span></div>
+        <div class="secret-text">
+          Passing the sequence of primes through the <strong>Zeta Function (ζ)</strong> seals infinite fluctuations into a single box.<br>
+          We define the inside of that box as the world and seek nothing outside.<br>
+          This is the <strong>"Amulet of Arithmetic"</strong> that protects the finite world.
+        </div>
+      </div>
       
       <div style="font-size:0.7rem; color:var(--color-usuzumi); margin-top:8px; text-align:right; font-family:var(--font-en); font-style:italic;">
         * All rows are open procedures, just like Sangaku.
@@ -735,5 +902,4 @@
 
 </script>
 </body>
-
 </html>
