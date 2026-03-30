@@ -10,6 +10,9 @@
 
 It is a digital re-implementation of "Enri" (the Circle Principle) developed by the Edo-era Japanese mathematical giant **Seki Takakazu**. While Western mathematics historically relied on "Limits" and "Infinity" to approach truth, Wasan perfected a **Finite Procedure** to trap truth within a rigorous "Cage" (Threshold). This project serves as technical evidence that the core concepts of **Responsibility Engineering**—guaranteeing the finite world—originate from Japanese mathematical traditions.
 
+🌐 GhostDrift Mathematical Institute (Official)
+https://www.ghostdriftresearch.com/
+
 ## **💡 Why it Matters: The Theoretical Pillar of AI Safety**
 
 In modern AI systems, "hallucination" is essentially a **boundary violation**. Traditional AI tries to predict the "limit" of truth, often overstepping its verified knowledge.
